@@ -1,26 +1,31 @@
 from flask import Flask, request, jsonify
-import openai
+import requests
 
 app = Flask(__name__)
 
+PYXL_API_KEY = "pxl_live_rVt123pXfLQzj0aBCx45FgYtHkPzNaMZ"
 
-openai.api_key = ""
-openai.organization="org-XCkftRrq4SKPLyyEccdMLbkt"
 @app.route("/")
 def hello():
-    return "Привет! Сервер работает."
+    return "Привет! Сервер работает на Pyxl.Pro."
 
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json
     user_message = data.get("message", "")
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": user_message}]
+    response = requests.post(
+        "https://api.pyxl.pro/v1/chat/completions",
+        headers={"Authorization": f"Bearer {PYXL_API_KEY}"},
+        json={
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": user_message}]
+        }
     )
 
-    ai_message = response['choices'][0]['message']['content']
+    response_data = response.json()
+    ai_message = response_data['choices'][0]['message']['content']
+
     return jsonify({"reply": ai_message})
 
 if __name__ == "__main__":
