@@ -1,33 +1,32 @@
 from flask import Flask, request, jsonify
-import requests
+import openai
 
 app = Flask(__name__)
 
 
-PYXL_API_KEY = "pxl_live_rVt123pXfLQzj0aBCx45FgYtHkPzNaMZ"
+openai.api_key = "sk-ВОТ_СЮДА_ВСТАВЬ_ТВОЙ_КЛЮЧ"
 
 @app.route("/")
-def hello():
-    return "Привет! Сервер работает на Pyxl.Pro через рабочий сервер."
+def home():
+    return "Привет! Сервер работает."
 
 @app.route("/ask", methods=["POST"])
 def ask():
     data = request.json
     user_message = data.get("message", "")
 
-    response = requests.post(
-        "https://pyxl-gateway.gptpro.site/v1/chat/completions",
-        headers={"Authorization": f"Bearer {PYXL_API_KEY}"},
-        json={
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": user_message}]
-        }
-    )
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", # можно gpt-4 если есть доступ
+            messages=[
+                {"role": "user", "content": user_message}
+            ]
+        )
+        ai_message = response['choices'][0]['message']['content']
+        return jsonify({"reply": ai_message})
 
-    response_data = response.json()
-    ai_message = response_data['choices'][0]['message']['content']
-
-    return jsonify({"reply": ai_message})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
