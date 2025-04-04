@@ -8,7 +8,7 @@ PYXL_API_KEY = "pxl_live_rVt123pXfLQzj0aBCx45FgYtHkPzNaMZ"
 
 @app.route("/")
 def hello():
-    return "Привет! Сервер работает на Pyxl.Pro."
+    return "Привет! Сервер работает на Pyxl.Pro через рабочий сервер."
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -16,7 +16,7 @@ def ask():
     user_message = data.get("message", "")
 
     response = requests.post(
-        "https://api.pyxl.pro/v1/chat/completions",
+        "https://pyxl-gateway.gptpro.site/v1/chat/completions",
         headers={"Authorization": f"Bearer {PYXL_API_KEY}"},
         json={
             "model": "gpt-3.5-turbo",
