@@ -3,8 +3,10 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-# Твой реальный OpenAI API ключ вставлен напрямую
-client = OpenAI(api_key="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")
+# Твой реальный API-ключ, вставлен напрямую
+client = OpenAI(
+    api_key="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"
+)
 
 @app.route("/")
 def home():
@@ -18,9 +20,7 @@ def ask():
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": user_message}
-            ]
+            messages=[{"role": "user", "content": user_message}]
         )
         ai_message = response.choices[0].message.content
         return jsonify({"reply": ai_message})
