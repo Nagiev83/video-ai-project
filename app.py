@@ -1,10 +1,10 @@
 import os
 from flask import Flask, request, jsonify
-import openai
+from openai import OpenAI
 
 app = Flask(__name__)
 
-openai.api_key = os.getenv("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")
+client = OpenAI(api_key=os.getenv("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"))
 
 @app.route("/")
 def home():
@@ -16,13 +16,13 @@ def ask():
     user_message = data.get("message", "")
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "user", "content": user_message}
             ]
         )
-        ai_message = response['choices'][0]['message']['content']
+        ai_message = response.choices[0].message.content
         return jsonify({"reply": ai_message})
 
     except Exception as e:
@@ -30,4 +30,3 @@ def ask():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
- 
